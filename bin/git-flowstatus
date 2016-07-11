@@ -1,0 +1,35 @@
+#! /bin/bash
+
+#Check print commits that are in $2 that are not merged into $1
+function check_pending {
+  baseref=`git rev-parse --verify -q $1` || echo "No branch for $1"
+  checkref=`git rev-parse --verify -q $2` || echo "No branch for $2"
+  if [ ! $checkref = `git merge-base $baseref $checkref` ]; then
+    echo "$2 > $1"
+    git --no-pager log --oneline $1..$2
+    echo ""
+  fi
+}
+
+gitdir=`git rev-parse --git-dir`
+headsdir="$gitdir/refs/heads"
+# Find all branches we've checked out locally
+localFeatureBranches=`find "$headsdir" -type f | sed "s:$headsdir/::" | grep ^feature/`
+
+#git fetch --all -q
+
+echo "master:5"
+git --no-pager log --oneline -n 5 master
+echo ""
+
+check_pending master release
+check_pending release develop
+
+for b in $localFeatureBranches; do
+  check_pending develop $b
+done
+
+#check_pending origin/master origin/release
+#check_pending origin/release origin/develop
+
+

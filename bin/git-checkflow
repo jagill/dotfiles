@@ -1,0 +1,19 @@
+#! /bin/bash
+
+#TODO: Set a dirty flag if something isn't merged; return error code.
+function check_merged {
+  echo "Checking $1 $2"
+  baseref=`git rev-parse --verify -q $1` || echo "No branch for $1"
+  checkref=`git rev-parse --verify -q $2` || echo "No branch for $2"
+  #echo "Checking $baseref $checkref"
+  if [ ! $baseref = `git merge-base $baseref $checkref` ]; then
+    echo "$1 is not merged into $2"
+  fi
+}
+
+#git fetch --all -q
+check_merged master release
+check_merged release develop
+check_merged origin/master origin/release
+check_merged origin/release origin/develop
+

@@ -1,0 +1,4 @@
+#! /bin/bash
+
+here=`git symbolic-ref HEAD | sed 's:refs/heads/::'`
+git push --set-upstream origin $here

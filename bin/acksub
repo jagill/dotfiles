@@ -1,0 +1,34 @@
+#!/bin/sh
+set -e
+
+while [ $# -gt 0 ]
+do
+    case "$1" in
+        -a)  ALLFILES=-a;;
+        -w)  WORDONLY=true;;
+        -D)  TOPDIR="$2"; shift;;
+        --)	shift; break;;
+        -*)
+            echo >&2 \
+            "usage: $0 [-w] [-a] [-D topdir] [findstring replacestring]"
+            exit 1;;
+        *)  break;;	# terminate while loop
+    esac
+    shift
+done
+
+UNAME=`uname`
+
+if [ -n "$WORDONLY" ]; then
+    WORDSWITCH=-w
+    if [ "$UNAME" = "Darwin" ]; then
+        WORDSTART="[[:<:]]"
+        WORDEND="[[:>:]]"
+    else
+        WORDSTART="\b"
+        WORDEND="\b"
+    fi
+fi
+
+[ -n "$TOPDIR" ] && cd $TOPDIR
+ack -l $ALLFILES --print0 $WORDSWITCH "$1" | xargs -0 sed -E -i.bak 's/'"$WORDSTART$1$WORDEND"'/'"$2"'/g'

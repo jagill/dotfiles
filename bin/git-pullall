@@ -1,0 +1,45 @@
+#! /bin/bash
+
+# TODO: If a remote branch is deleted, delete the corresponding local branch
+# if it has no additional commits.
+# It has output like:
+#  x [deleted]         (none)     -> origin/polygon-segmentation
+#  x [deleted]         (none)     -> origin/simple-segmentation
+
+git fetch --prune "$@"
+
+here=`git symbolic-ref --short --quiet HEAD`
+gitdir=`git rev-parse --git-dir`
+headsdir="$gitdir/refs/heads"
+# Find all branches we've checked out locally
+localBranches=`git show-ref --heads | cut -d' ' -f2 | sed 's:refs/heads/::'`
+
+for b in $localBranches; do
+  # Does the branch have a remote?
+  if ! remotecommit=`git rev-parse --verify -q origin/$b`; then
+    continue
+  fi
+  localcommit=`git rev-parse $b`
+
+  # If the local and remote are the same, move along.
+  if [ $localcommit == $remotecommit ]; then
+    continue
+  fi
+
+  # If it's the current branch, merge so that this behaves like git pull
+  if [ "$b" == "$here" ]; then
+    git merge origin/$b
+    continue
+  fi
+
+  # Check if the local branch is an ancestor of the remote branch
+  if git merge-base --is-ancestor $localcommit $remotecommit; then
+    echo "Fast-fowarding $b."
+    git update-ref refs/heads/$b $remotecommit $localcommit
+  elif git merge-base --is-ancestor $remotecommit $localcommit; then
+    echo "$b is ahead of the remote, nothing to fast-forward."
+  else
+    echo "$b has local and remote changes, it cannot be fast-forwarded."
+  fi
+done
+
