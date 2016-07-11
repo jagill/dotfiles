@@ -1,0 +1,102 @@
+# ~/.bashrc: executed by bash(1) for non-login shells.
+# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+# for examples
+
+GIT_BASH_DIR="/usr/local/etc/bash_completion.d"
+
+# If not running interactively, don't do anything
+if [[ -n "$PS1" ]] ; then
+
+    if [ -f "$GIT_BASH_DIR/git-prompt.sh" ]; then
+      HAS_GIT_PROMPT=true
+      source "$GIT_BASH_DIR/git-prompt.sh"
+    fi
+
+    # set variable identifying the chroot you work in (used in the prompt below)
+    if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
+        debian_chroot=$(cat /etc/debian_chroot)
+    fi
+
+    # set a fancy prompt (non-color, unless we know we "want" color)
+    case "$TERM" in
+        xterm-color) color_prompt=yes;;
+    esac
+
+    # uncomment for a colored prompt, if the terminal has the capability; turned
+    # off by default to not distract the user: the focus in a terminal window
+    # should be on the output of commands, not on the prompt
+    force_color_prompt=yes
+
+    if [ -n "$force_color_prompt" ]; then
+        if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+        # We have color support; assume it's compliant with Ecma-48
+        # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+        # a case would tend to support setf rather than setaf.)
+        color_prompt=yes
+        else
+        color_prompt=
+        fi
+    fi
+
+    if [ "$color_prompt" = yes ]; then
+      BLACK="\[\033[0;30m\]"
+      RED="\[\033[0;31m\]"
+      GREEN="\[\033[0;32m\]"
+      LIME="\[\033[01;32m\]"
+      YELLOW="\[\033[0;33m\]"
+      BBLUE="\[\033[01;34m\]"
+      MAGENTA="\[\e[0;35m\]"
+      CYAN="\[\e[0;36m\]"
+      WHITE="\[\033[37m\]"
+      BOLD="\[\033[1m\]"
+      OFF="\[\033[0m\]"
+    fi
+
+    GIT_PS1_SHOWDIRTYSTATE=true
+    GIT_PS1_SHOWCOLORHINTS=true
+    #GIT_PS1_SHOWUNTRACKEDFILES=true
+    GIT_PS1_SHOWUPSTREAM="auto"
+
+    function __prompt() {
+      local EXIT="$?"             # This needs to be first
+      PS1=""
+
+      if [ -n "$VIRTUAL_ENV" ]; then
+        virtualEnvPrompt=" {$(basename $VIRTUAL_ENV)}"
+      else
+        virtualEnvPrompt=""
+      fi
+
+# TODO: Add a NVM prompt
+
+      PS1+="${debian_chroot:+($debian_chroot)}${LIME}\u${GREEN}@${LIME}\h${WHITE}:${BBLUE}\w${WHITE}${BOLD}${virtualEnvPrompt}${OFF}"
+      if [ -n "$HAS_GIT_PROMPT" ]; then
+        PS1+="${MAGENTA}\$(__git_ps1 ' (%s)')${OFF}"
+      fi
+
+      if [ $EXIT != 0 ]; then
+          EXIT_PROMPT="${RED}X${EXIT} ${OFF}"      # Add red X if exit code non 0
+      else
+          EXIT_PROMPT=""
+      fi
+
+      PS1+="\n$EXIT_PROMPT$BOLD\$$OFF "
+
+      
+    }
+    
+    export PROMPT_COMMAND=__prompt # Use __prompt to generate prompt after each command
+    unset color_prompt force_color_prompt
+
+    # If this is an xterm set the title to current dir
+    case "$TERM" in
+    xterm*|rxvt*)
+    #    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+        PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\w\a\]$PS1"
+        ;;
+    *)
+        ;;
+    esac
+
+fi #endif for $PS1
+

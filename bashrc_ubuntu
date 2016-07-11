@@ -1,0 +1,10 @@
+CONFIG=$HOME/Dropbox/config
+if [ -f /etc/bashrc ]; then
+    source /etc/bashrc
+fi
+if [ -f $CONFIG/bashrc ]; then
+    source $CONFIG/bashrc
+fi
+
+export EDITOR=vim
+export PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/jag/Dropbox/bin:/home/jag/Dropbox/bin

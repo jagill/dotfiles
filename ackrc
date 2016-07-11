@@ -1,0 +1,23 @@
+--ignore-directory=is:build
+--ignore-directory=is:.build
+--ignore-directory=is:target
+--ignore-directory=is:node_modules
+--ignore-directory=is:dist
+--ignore-directory=is:.madeye-common
+--ignore-directory=is:.meteor
+--ignore-file=ext:tags
+--ignore-file=is:.filenametags
+--ignore-file=is:.cscope.files
+--ignore-file=is:.cscope.out
+
+
+# Define a couple more types
+--type-set=velocity=.vm
+--type-set=htaccess=.htaccess
+--type-set=xib=.xib
+--type-set=plist=.plist
+--type-set=jade=.jade
+--type-set=coffee=.coffee
+--type-set=less=.less
+--type-set=json=.json
+--type-set=puppet=.pp
