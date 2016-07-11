@@ -1,4 +1,4 @@
-CONFIG=$HOME/Dropbox/config
+CONFIG=$HOME/dotfiles
 if [ -f /etc/bashrc ]; then
     source /etc/bashrc
 fi
