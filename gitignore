@@ -1,0 +1,68 @@
+## Backups
+*~
+*.bak
+#vim
+*.swp
+*.swo
+
+## OS X
+.DS_Store
+Icon?
+# Thumbnails
+._*
+# Files that might appear on external disk
+.Spotlight-V100
+
+# Xcode
+*~.nib
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.xcuserstate
+project.xcworkspace/
+xcuserdata/
+
+# Generated files
+*.[oa]
+*.py[co]
+*.class
+.cscope.files
+.cscope.out
+.filenametags
+*.tags
+
+#Version control
+.svn
+*.orig
+
+##Eclipse
+.project
+.classpath
+.settings/
+
+## Android
+# built application files
+*.apk
+*.ap_
+
+# files for the dex VM
+*.dex
+
+# Android generated files
+#bin/
+#gen/
+
+# Build and packages
+node_modules/
+bower_components/
+.sass-cache/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Vagrant
+.vagrant/
+
+#python
+venv/
