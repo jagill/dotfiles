@@ -18,7 +18,6 @@ if [[ -n "$PS1" ]] ; then
 
     launchctl setenv PATH $PATH
     eval "$(rbenv init -)"
-    export HOMEBREW_GITHUB_API_TOKEN=20a71937dc5c15c5bfbbe6b72caf3b1d22a3c4bd
 
     export NVM_DIR="/Users/jag/.nvm"
     # This takes about 750ms; is there a way to speed it up?

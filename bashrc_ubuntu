@@ -7,4 +7,4 @@ if [ -f $CONFIG/bashrc ]; then
 fi
 
 export EDITOR=vim
-export PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/jag/Dropbox/bin:/home/jag/Dropbox/bin
+export PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:$CONFIG/bin
