@@ -1,0 +1,46 @@
+# vim: set ft=tmux tw=80:
+
+# Setting the prefix from `C-b` to `C-a`.
+# By remapping the `CapsLock` key to `Ctrl`,
+# you can make triggering commands more comfottable!
+set -g prefix C-a
+
+# Free the original `Ctrl-b` prefix keybinding.
+unbind C-b
+
+# Ensure that we can send `Ctrl-a` to other apps.
+bind C-a send-prefix
+
+# Reload the file with Prefix r.
+bind r source-file ~/.tmux.conf \; display "Reloaded!"
+
+# Moving between panes.
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+
+# Moving between windows.
+# Provided you've mapped your `CAPS LOCK` key to the `CTRL` key,
+# you can now move between panes without moving your hands off the home row.
+bind -r C-h select-window -t :-
+bind -r C-l select-window -t :+
+
+# Vimlike copy mode.
+unbind [
+bind Escape copy-mode
+unbind p
+bind p paste-buffer
+bind -t vi-copy 'v' begin-selection
+bind -t vi-copy 'y' copy-selection
+
+# Enable vi keys.
+set-option -g status-keys vi
+set-window-option -g mode-keys vi
+
+## Enable mouse mode.
+#set -gw mouse on
+
+## Render mouse information as UTF-8.
+## set -gw mouse-utf8 on
+
