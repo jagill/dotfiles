@@ -5,7 +5,7 @@ if [ ! -d $CONFIG_DIR ]; then
     exit 1
 fi
 
-[ -f $HOME/.bashrc ] || ln -s $CONFIG_DIR/bashrc_osx $HOME/.bashrc
+[ -f $HOME/.bashrc ] || ln -s $CONFIG_DIR/bashrc_macos $HOME/.bashrc
 [ -f $HOME/.bash_profile ] || ln -s $CONFIG_DIR/bash_profile_mac $HOME/.bash_profile
 [ -f $HOME/.bash_aliases ] || ln -s $CONFIG_DIR/bash_aliases_mac $HOME/.bash_aliases
 [ -f $HOME/.bash_prompt ] || ln -s $CONFIG_DIR/bash_prompt $HOME/.bash_prompt

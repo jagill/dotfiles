@@ -33,8 +33,8 @@ if [[ -n "$PS1" ]] ; then
     fi
 
     # Fancy prompt
-    if [ -f ~/.bash_prompt ]; then
-        source ~/.bash_prompt
+    if [ -f $CONFIG/bash_prompt ]; then
+        source $CONFIG/bash_prompt
     fi
 
     # enable programmable completion features (you don't need to enable

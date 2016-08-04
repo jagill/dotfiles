@@ -8,3 +8,4 @@ fi
 
 export EDITOR=vim
 export PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:$CONFIG/bin
+# export LS_COLORS=....

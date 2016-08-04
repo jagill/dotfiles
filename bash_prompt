@@ -79,7 +79,7 @@ if [[ -n "$PS1" ]] ; then
       if [ $EXIT != 0 ]; then
           EXIT_PROMPT="${RED}X${EXIT} ${OFF}"      # Add red X if exit code non 0
       else
-          EXIT_PROMPT=""
+          EXIT_PROMPT="${GREEN}0 ${OFF}"
       fi
 
       PS1+="\n$EXIT_PROMPT$BOLD\$$OFF "
