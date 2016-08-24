@@ -1,10 +1,12 @@
-CONFIG=$HOME/Dropbox/config
+export CONFIG=$HOME/dotfiles
+
+export BASH_COMPLETION_DIR="/usr/local/etc/bash_completion.d"
+export GIT_BASH_PROMPT="$BASH_COMPLETION_DIR/git-prompt.sh"
+
+# Default mac PATH: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin
+
 if [ -f $CONFIG/bashrc ]; then
     source $CONFIG/bashrc
-fi
-
-if [ -f $CONFIG/git-completion.bash ]; then
-    source $CONFIG/git-completion.bash
 fi
 
 if [ -d $HOME/bin ]; then
@@ -23,11 +25,11 @@ if [[ -n "$PS1" ]] ; then
     export LSCOLORS=GxFxCxDxBxegedabagaced
 
     launchctl setenv PATH $PATH
-    eval "$(rbenv init -)"
+    # eval "$(rbenv init -)"
 
     export NVM_DIR="/Users/jag/.nvm"
     # This takes about 750ms; is there a way to speed it up?
-    [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"  # This loads nvm
+    # [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"  # This loads nvm
 
 fi #endif for $PS1
 

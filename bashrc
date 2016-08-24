@@ -37,6 +37,10 @@ if [[ -n "$PS1" ]] ; then
         source $CONFIG/bash_prompt
     fi
 
+    if [ -f $BASH_COMPLETION_DIR/git-completion.bash ]; then
+        source $BASH_COMPLETION_DIR/git-completion.bash
+    fi
+
     # enable programmable completion features (you don't need to enable
     # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
     # sources /etc/bash.bashrc).
@@ -44,9 +48,11 @@ if [[ -n "$PS1" ]] ; then
     #    . /etc/bash_completion
     #fi
 
-    ## User specific addtions
+    ## User specific additions
 
-    export PATH=/usr/local/sbin:/usr/local/bin:$PATH
+    if [ -d $CONFIG/bin ]; then
+        PATH=$PATH:$CONFIG/bin
+    fi
 
     export EDITOR=vim
     export VIMDIR=$HOME/.vim

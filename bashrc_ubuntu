@@ -1,12 +1,13 @@
 export CONFIG=$HOME/dotfiles
 
-if [ -f /etc/bashrc ]; then
-    source /etc/bashrc
-fi
+export BASH_COMPLETION_DIR="/etc/bash_completion.d"
+export GIT_BASH_PROMPT="$BASH_COMPLETION_DIR/git-prompt"
+
+echo "PATH>>" $PATH
+export PATH=/usr/local/sbin:/usr/local/bin:$PATH
+
 if [ -f $CONFIG/bashrc ]; then
     source $CONFIG/bashrc
 fi
 
-export EDITOR=vim
-export PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:$CONFIG/bin
 # export LS_COLORS=....
