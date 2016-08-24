@@ -28,8 +28,8 @@ if [[ -n "$PS1" ]] ; then
     # make less more friendly for non-text input files, see lesspipe(1)
     [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-    if [ -f ~/.bash_aliases ]; then
-        source ~/.bash_aliases
+    if [ -f $CONFIG/bash_aliases ]; then
+        source $CONFIG/bash_aliases
     fi
 
     # Fancy prompt
@@ -46,7 +46,7 @@ if [[ -n "$PS1" ]] ; then
 
     ## User specific addtions
 
-    export PATH=/usr/local/sbin:/usr/local/bin:$PATH:$HOME/Dropbox/bin:/usr/local/share/npm/bin
+    export PATH=/usr/local/sbin:/usr/local/bin:$PATH
 
     export EDITOR=vim
     export VIMDIR=$HOME/.vim
@@ -54,7 +54,10 @@ if [[ -n "$PS1" ]] ; then
 
     export WORKON_HOME=~/.envs
     # This takes 200ms; is there a way to speed it up?
-    source /usr/local/bin/virtualenvwrapper.sh
+    VIRTUALENV_WRAPPER_SCRIPT=/usr/local/bin/virtualenvwrapper.sh
+    if [ -f $VIRTUALENV_WRAPPER_SCRIPT ]; then
+      source $VIRTUALENV_WRAPPER_SCRIPT
+    fi
 
     if [ -f $HOME/.projectsrc ]; then
         source $HOME/.projectsrc 

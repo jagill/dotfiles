@@ -10,6 +10,12 @@ fi
 if [ -d $HOME/bin ]; then
     PATH=$PATH:$HOME/bin
 fi
+if [ -d $HOME/Dropbox/bin ]; then
+    PATH=$PATH:$HOME/Dropbox/bin:/usr/local/share/npm/bin
+fi
+if [ -d /usr/local/share/npm/bin ]; then
+    PATH=$PATH:/usr/local/share/npm/bin
+fi
 
 # If not running interactively, don't do anything
 if [[ -n "$PS1" ]] ; then

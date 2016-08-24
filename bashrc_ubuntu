@@ -1,4 +1,5 @@
-CONFIG=$HOME/dotfiles
+export CONFIG=$HOME/dotfiles
+
 if [ -f /etc/bashrc ]; then
     source /etc/bashrc
 fi
