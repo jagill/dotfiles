@@ -1,0 +1,23 @@
+{
+    //Environments
+    "browser"   : true,
+    "devel"     : true,
+    "jquery"    : true,
+    "node"      : true,
+
+    //Restrictions
+    "undef"     : true,  //Notify about using undefined variables
+    "unused"    : true,  //Notify about unused variables
+    "strict"    : false, //Quell annoying "use strict" error messages
+    "trailing"  : true,  //Disallow trailing whitespace
+
+    //Relaxations
+    "asi"       : true,
+    "es5"       : true, //Allow .static methods
+    "laxcomma"  : true  //Allow dangling/leading commas
+    
+    //Globals
+    "globals": {
+        "Package": false,
+    }
+}
