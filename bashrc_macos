@@ -1,3 +1,4 @@
+# vim: ft=sh
 export CONFIG=$HOME/dotfiles
 
 export BASH_COMPLETION_DIR="/usr/local/etc/bash_completion.d"
