@@ -5,6 +5,13 @@
 # If not running interactively, don't do anything
 if [[ -n "$PS1" ]] ; then
 
+    PROMPT_HOST_FILE="$HOME/.ssh/promptHost"
+    if [ -f "$PROMPT_HOST_FILE" ]; then
+      PROMPT_HOST=`head -1 "$PROMPT_HOST_FILE"`
+    else
+      PROMPT_HOST='\h'
+    fi
+
     if [ -f "$GIT_BASH_PROMPT" ]; then
       HAS_GIT_PROMPT=true
       source "$GIT_BASH_PROMPT"
@@ -67,7 +74,7 @@ if [[ -n "$PS1" ]] ; then
 
 # TODO: Add a NVM prompt
 
-      PS1+="${debian_chroot:+($debian_chroot)}${LIME}\u${GREEN}@${LIME}\h${WHITE}:${BBLUE}\w${WHITE}${BOLD}${virtualEnvPrompt}${OFF}"
+      PS1+="${debian_chroot:+($debian_chroot)}${LIME}\u${GREEN}@${LIME}$PROMPT_HOST${WHITE}:${BBLUE}\w${WHITE}${BOLD}${virtualEnvPrompt}${OFF}"
       if [ -n "$HAS_GIT_PROMPT" ]; then
         PS1+="${MAGENTA}\$(__git_ps1 ' (%s)')${OFF}"
       fi
