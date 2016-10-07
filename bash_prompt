@@ -5,24 +5,12 @@
 # If not running interactively, don't do anything
 if [[ -n "$PS1" ]] ; then
 
-    PROMPT_HOST_FILE="$HOME/.ssh/promptHost"
-    if [ -f "$PROMPT_HOST_FILE" ]; then
-      PROMPT_HOST=`head -1 "$PROMPT_HOST_FILE"`
-    else
-      PROMPT_HOST='\h'
-    fi
-
-    if [ -f "$GIT_BASH_PROMPT" ]; then
-      HAS_GIT_PROMPT=true
-      source "$GIT_BASH_PROMPT"
-    fi
-
     # set variable identifying the chroot you work in (used in the prompt below)
     if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
         debian_chroot=$(cat /etc/debian_chroot)
     fi
 
-    # set a fancy prompt (non-color, unless we know we "want" color)
+    # Set up color prompt
     case "$TERM" in
         xterm-color) color_prompt=yes;;
     esac
@@ -57,11 +45,37 @@ if [[ -n "$PS1" ]] ; then
       OFF="\[\033[0m\]"
     fi
 
+    # If we've set an explicit override hostname here, show it instead of the
+    # real hostname.
+    PROMPT_HOST_FILE="$HOME/.ssh/promptHost"
+    if [ -f "$PROMPT_HOST_FILE" ]; then
+      PROMPT_HOST=`head -1 "$PROMPT_HOST_FILE"`
+    else
+      PROMPT_HOST='\h'
+    fi
+
+    ####
+    # Git Prompt
+
+    if [ -f "$GIT_BASH_PROMPT" ]; then
+      HAS_GIT_PROMPT=true
+      source "$GIT_BASH_PROMPT"
+    fi
+
     GIT_PS1_SHOWDIRTYSTATE=true
     GIT_PS1_SHOWCOLORHINTS=true
     #GIT_PS1_SHOWUNTRACKEDFILES=true
     GIT_PS1_SHOWUPSTREAM="auto"
 
+    ####
+    # Mercurial Prompt
+    function parse_hg_dirty {
+      # [[ $( hg status 2> /dev/null ) != "" ]] && echo "!"
+      hg status | cut -d ' ' -f 1 | uniq -c | tr -d '[[:space:]]' | tr '\n' ' '
+    }
+
+    ####
+    # Build the prompt
     function __prompt() {
       local EXIT="$?"             # This needs to be first
       PS1=""
@@ -77,6 +91,16 @@ if [[ -n "$PS1" ]] ; then
       PS1+="${debian_chroot:+($debian_chroot)}${LIME}\u${GREEN}@${LIME}$PROMPT_HOST${WHITE}:${BBLUE}\w${WHITE}${BOLD}${virtualEnvPrompt}${OFF}"
       if [ -n "$HAS_GIT_PROMPT" ]; then
         PS1+="${MAGENTA}\$(__git_ps1 ' (%s)')${OFF}"
+      fi
+
+      HG_BRANCH=$(hg branch 2>/dev/null)
+      if [ -n "$HG_BRANCH" ]; then
+        HG_DIRTY=$(parse_hg_dirty)
+        if [ -n "$HG_DIRTY" ]; then
+          HG_DIRTY=" "$HG_DIRTY
+        fi
+
+        PS1+=" ${MAGENTA}[${HG_BRANCH}${HG_DIRTY}]${OFF}"
       fi
 
       if [ $EXIT != 0 ]; then
