@@ -1,3 +1,4 @@
+# vim: ft=sh
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -70,7 +71,7 @@ if [[ -n "$PS1" ]] ; then
     ####
     # Mercurial Prompt
     function parse_hg_dirty {
-      # [[ $( hg status 2> /dev/null ) != "" ]] && echo "!"
+      # Makes a prompt like "2M 1! 1?" for 2 modified files, 1 removed file, 1 untracked file.
       hg status | cut -d ' ' -f 1 | uniq -c | tr -d '[[:space:]]' | tr '\n' ' '
     }
 
@@ -95,6 +96,12 @@ if [[ -n "$PS1" ]] ; then
 
       HG_BRANCH=$(hg branch 2>/dev/null)
       if [ -n "$HG_BRANCH" ]; then
+
+        HG_BOOKMARK=$(hg bookmark 2> /dev/null | grep '*' | cut -d ' ' -f 3)
+        if [ -n "$HG_BOOKMARK" ]; then
+          HG_BRANCH=$HG_BOOKMARK
+        fi
+
         HG_DIRTY=$(parse_hg_dirty)
         if [ -n "$HG_DIRTY" ]; then
           HG_DIRTY=" "$HG_DIRTY
