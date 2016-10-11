@@ -93,8 +93,30 @@ if [[ -n "$PS1" ]] ; then
 
     ####
     # Mercurial Prompt
-    function in_hg_repo {
-      hg branch 2> /dev/null > /dev/null
+    search_up ()
+    (
+        while [ $PWD != "/" ]; do
+            if [ -e "$1" ]; then
+                pwd
+                break
+            fi
+            cd ..
+        done
+    )
+
+    hg_bookmark() {
+      local root
+      root=$(search_up .hg)
+      if [ -z "$root" ]; then
+        exit 0;
+      fi
+      hg_root="$root/.hg"
+      if [ -e "$hg_root/bookmarks.current" ]; then
+        current_bookmark=$(cat "$hg_root/bookmarks.current")
+      else
+        current_bookmark='default'
+      fi
+      echo $current_bookmark
     }
 
     function parse_hg_dirty {
@@ -141,16 +163,15 @@ if [[ -n "$PS1" ]] ; then
       # This will be blank if outside the repo.  If we have a bookmark, it
       # will start with "*"
       # NB: This is slow.  Each call to hg takes at least 0.2s
-      if in_hg_repo; then
-        HG_BOOKMARK=$(hg bookmark 2> /dev/null | grep '*' | cut -d ' ' -f 3)
-        HG_BOOKMARK=${HG_BOOKMARK:-"default"}
+      HG_BOOKMARK=$(hg_bookmark)
+      if [ -n "$HG_BOOKMARK" ]; then
 
-        HG_DIRTY=$(parse_hg_dirty)
-        if [ -n "$HG_DIRTY" ]; then
-          HG_DIRTY=" "$HG_DIRTY
-        fi
+        #HG_DIRTY=$(parse_hg_dirty)
+        #if [ -n "$HG_DIRTY" ]; then
+          #HG_DIRTY=" "$HG_DIRTY
+        #fi
 
-        HG_PROMPT=" ${MAGENTA}[${HG_BOOKMARK}${HG_DIRTY}]${OFF}"
+        HG_PROMPT=" ${MAGENTA}[${HG_BOOKMARK}]${OFF}"
       else
         HG_PROMPT=""
       fi
