@@ -93,6 +93,10 @@ if [[ -n "$PS1" ]] ; then
 
     ####
     # Mercurial Prompt
+    function in_hg_repo {
+      hg branch 2> /dev/null > /dev/null
+    }
+
     function parse_hg_dirty {
       # Makes a prompt like "2M 1! 1?" for 2 modified files, 1 removed file, 1 untracked file.
       hg status | cut -d ' ' -f 1 | uniq -c | tr -d '[[:space:]]' | tr '\n' ' '
@@ -137,9 +141,8 @@ if [[ -n "$PS1" ]] ; then
       # This will be blank if outside the repo.  If we have a bookmark, it
       # will start with "*"
       # NB: This is slow.  Each call to hg takes at least 0.2s
-      HG_BOOKMARK=$(hg bookmark 2> /dev/null)
-      if [ -n "$HG_BOOKMARK" ]; then
-        HG_BOOKMARK=$(echo $HG_BOOKMARK | grep '*' | cut -d ' ' -f 3)
+      if in_hg_repo; then
+        HG_BOOKMARK=$(hg bookmark 2> /dev/null | grep '*' | cut -d ' ' -f 3)
         HG_BOOKMARK=${HG_BOOKMARK:-"default"}
 
         HG_DIRTY=$(parse_hg_dirty)
