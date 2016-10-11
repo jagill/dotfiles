@@ -63,10 +63,33 @@ if [[ -n "$PS1" ]] ; then
       source "$GIT_BASH_PROMPT"
     fi
 
-    GIT_PS1_SHOWDIRTYSTATE=true
+    GIT_PS1_SHOWDIRTYSTATE=""
     GIT_PS1_SHOWCOLORHINTS=true
     #GIT_PS1_SHOWUNTRACKEDFILES=true
     GIT_PS1_SHOWUPSTREAM="auto"
+
+    # git status --porcelain
+    # "M " Modified, in index
+    # " M" Modified, not in index
+    # "D " git rm
+    # " D" Deleted untracked
+    # "R " Renamed in index
+    # "??" untracked
+    # "A " Added file.
+    function parse_git_dirty_unstaged {
+      git status --porcelain | cut -c2 \
+        | sed '/^[[:space:]]*$/d' \
+        | sort | uniq -c \
+        | tr -d '[[:space:]]' | tr '\n' ' '
+    }
+
+    function parse_git_dirty_staged {
+      git status --porcelain | cut -c1 \
+        | sed '/^[[:space:]]*$/d' \
+        | grep -v '?' \
+        | sort | uniq -c \
+        | tr -d '[[:space:]]' | tr '\n' ' '
+    }
 
     ####
     # Mercurial Prompt
@@ -81,33 +104,52 @@ if [[ -n "$PS1" ]] ; then
       local EXIT="$?"             # This needs to be first
       PS1=""
 
+      CHROOT="${debian_chroot:+($debian_chroot)}"
+      USER_HOST="${LIME}\u${GREEN}@${LIME}$PROMPT_HOST"
+
       if [ -n "$VIRTUAL_ENV" ]; then
-        virtualEnvPrompt=" {$(basename $VIRTUAL_ENV)}"
+        VIRTUAL_ENV_PROMPT=" ${WHITE}${BOLD}{$(basename $VIRTUAL_ENV)}"
       else
-        virtualEnvPrompt=""
+        VIRTUAL_ENV_PROMPT=""
       fi
 
 # TODO: Add a NVM prompt
 
-      PS1+="${debian_chroot:+($debian_chroot)}${LIME}\u${GREEN}@${LIME}$PROMPT_HOST${WHITE}:${BBLUE}\w${WHITE}${BOLD}${virtualEnvPrompt}${OFF}"
+      # Git
       if [ -n "$HAS_GIT_PROMPT" ]; then
-        PS1+="${MAGENTA}\$(__git_ps1 ' (%s)')${OFF}"
+        # Are we in a git repo?
+        if $(git rev-parse 2> /dev/null); then
+          GIT_DIRTY_UNSTAGED=$(parse_git_dirty_unstaged)
+          if [ -n "$GIT_DIRTY_UNSTAGED" ]; then
+            GIT_DIRTY_UNSTAGED=" "$GIT_DIRTY_UNSTAGED
+          fi
+          GIT_DIRTY_STAGED=$(parse_git_dirty_staged)
+          if [ -n "$GIT_DIRTY_STAGED" ]; then
+            GIT_DIRTY_STAGED=" "${GREEN}$GIT_DIRTY_STAGED
+          fi
+          GIT_PROMPT="${MAGENTA}\$(__git_ps1 ' (%s${GIT_DIRTY_UNSTAGED}${GIT_DIRTY_STAGED}${MAGENTA})')${OFF}"
+        else
+          GIT_PROMPT=""
+        fi
       fi
 
-      HG_BRANCH=$(hg branch 2>/dev/null)
-      if [ -n "$HG_BRANCH" ]; then
-
-        HG_BOOKMARK=$(hg bookmark 2> /dev/null | grep '*' | cut -d ' ' -f 3)
-        if [ -n "$HG_BOOKMARK" ]; then
-          HG_BRANCH=$HG_BOOKMARK
-        fi
+      # Mercurial
+      # This will be blank if outside the repo.  If we have a bookmark, it
+      # will start with "*"
+      # NB: This is slow.  Each call to hg takes at least 0.2s
+      HG_BOOKMARK=$(hg bookmark 2> /dev/null)
+      if [ -n "$HG_BOOKMARK" ]; then
+        HG_BOOKMARK=$(echo $HG_BOOKMARK | grep '*' | cut -d ' ' -f 3)
+        HG_BOOKMARK=${HG_BOOKMARK:-"default"}
 
         HG_DIRTY=$(parse_hg_dirty)
         if [ -n "$HG_DIRTY" ]; then
           HG_DIRTY=" "$HG_DIRTY
         fi
 
-        PS1+=" ${MAGENTA}[${HG_BRANCH}${HG_DIRTY}]${OFF}"
+        HG_PROMPT=" ${MAGENTA}[${HG_BOOKMARK}${HG_DIRTY}]${OFF}"
+      else
+        HG_PROMPT=""
       fi
 
       if [ $EXIT != 0 ]; then
@@ -116,6 +158,10 @@ if [[ -n "$PS1" ]] ; then
           EXIT_PROMPT="${GREEN}0 ${OFF}"
       fi
 
+      PS1="${CHROOT}${USER_HOST}${WHITE}:${BBLUE}\w"
+      PS1+="$VIRTUAL_ENV_PROMPT"
+      PS1+="$GIT_PROMPT"
+      PS1+="$HG_PROMPT"
       PS1+="\n$EXIT_PROMPT$BOLD\$$OFF "
 
       

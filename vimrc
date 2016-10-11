@@ -15,6 +15,8 @@ Plugin 'fholgado/minibufexpl.vim'
 Plugin 'vim-scripts/IndexedSearch.git'
 Plugin 'vim-scripts/Mark.git'
 Plugin 'vim-scripts/ReplaceWithRegister.git'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'majutsushi/tagbar'
 
 filetype plugin indent on  " Re-enable this after Vundle Plugins.
 
