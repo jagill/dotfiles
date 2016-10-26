@@ -2,7 +2,7 @@
   email = jamesagill@gmail.com
   name = James Gill
 [core]
-  excludesfile = /Users/jag/.gitignore_global
+  excludesfile = ~/.gitignore_global
   autocrlf = input
 [difftool "sourcetree"]
   cmd = opendiff \"$LOCAL\" \"$REMOTE\"
