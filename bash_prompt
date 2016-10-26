@@ -153,7 +153,7 @@ if [[ -n "$PS1" ]] ; then
           if [ -n "$GIT_DIRTY_STAGED" ]; then
             GIT_DIRTY_STAGED=" "${GREEN}$GIT_DIRTY_STAGED
           fi
-          GIT_PROMPT="${MAGENTA}\$(__git_ps1 ' (%s${GIT_DIRTY_UNSTAGED}${GIT_DIRTY_STAGED}${MAGENTA})')${OFF}"
+          GIT_PROMPT="${MAGENTA}\$(__git_ps1 ' (git:%s${GIT_DIRTY_UNSTAGED}${GIT_DIRTY_STAGED}${MAGENTA})')${OFF}"
         else
           GIT_PROMPT=""
         fi
@@ -171,7 +171,7 @@ if [[ -n "$PS1" ]] ; then
           #HG_DIRTY=" "$HG_DIRTY
         #fi
 
-        HG_PROMPT=" ${MAGENTA}[${HG_BOOKMARK}]${OFF}"
+        HG_PROMPT=" ${MAGENTA}(hg:${HG_BOOKMARK})${OFF}"
       else
         HG_PROMPT=""
       fi
