@@ -177,16 +177,16 @@ if [[ -n "$PS1" ]] ; then
       fi
 
       if [ $EXIT != 0 ]; then
-          EXIT_PROMPT="${RED}X${EXIT} ${OFF}"      # Add red X if exit code non 0
+          EXIT_PROMPT="${RED}${EXIT}${OFF}"      # Add red exit code if non 0
       else
-          EXIT_PROMPT="${GREEN}0 ${OFF}"
+          EXIT_PROMPT="${GREEN}0${OFF}"
       fi
 
       PS1="${CHROOT}${USER_HOST}${WHITE}:${BBLUE}\w"
       PS1+="$VIRTUAL_ENV_PROMPT"
       PS1+="$GIT_PROMPT"
       PS1+="$HG_PROMPT"
-      PS1+="\n$EXIT_PROMPT$BOLD\$$OFF "
+      PS1+="\n$EXIT_PROMPT $BOLD\$$OFF "
 
       
     }
