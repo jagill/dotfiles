@@ -9,7 +9,7 @@ fi
 [ -f $HOME/.bash_profile ] || ln -s $CONFIG_DIR/bash_profile_mac $HOME/.bash_profile
 [ -f $HOME/.gitignore_global ] || ln -s $CONFIG_DIR/gitignore $HOME/.gitignore_global
 
-for f in vimrc ackrc ctags gitconfig jshintrc; do
+for f in vimrc ackrc ctags gitconfig jshintrc tmux.conf; do
   [ -f $HOME/.$f ] || ln -s $CONFIG_DIR/$f $HOME/.$f
 done
 

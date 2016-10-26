@@ -11,6 +11,7 @@ call vundle#rc()
 Plugin 'gmarik/vundle'
 Plugin 'itchyny/lightline.vim'
 Plugin 'lifepillar/vim-solarized8'
+Plugin 'flazz/vim-colorschemes'
 Plugin 'fholgado/minibufexpl.vim'
 Plugin 'vim-scripts/IndexedSearch.git'
 Plugin 'vim-scripts/Mark.git'
@@ -52,7 +53,7 @@ set wildignore=.svn,CVS,.git,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.
 set mouse=a     " this enables vim mouse handling, and mucks up cut-paste from putty
 set mouseshape=i:beam
 
-set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:< "Show invisble characters with :set list
+set listchars=tab:▸\ ,eol:¬,trail:~,extends:>,precedes:< "Show invisble characters with :set list
 
 " To transfer?
 " set backspace=indent,eol,start  " allow backspacing over everything in insert mode 
