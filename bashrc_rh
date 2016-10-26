@@ -1,0 +1,14 @@
+# vim: ft=sh
+export CONFIG=$HOME/dotfiles
+
+export BASH_COMPLETION_DIR="/usr/share/doc/git-core-doc-2.9.3/contrib/completion/"
+export GIT_BASH_PROMPT="$BASH_COMPLETION_DIR/git-prompt.sh"
+
+# This seems to generally be handled automatically?
+# export PATH=/usr/local/sbin:/usr/local/bin:$PATH
+
+if [ -f $CONFIG/bashrc ]; then
+    source $CONFIG/bashrc
+fi
+
+# export LS_COLORS=....
