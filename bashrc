@@ -7,6 +7,12 @@ if [ -f /etc/bashrc ]; then
     source /etc/bashrc
 fi
 
+if [ -d "$HOME/.bashrc.local" ]; then
+  for f in "$HOME/.bashrc.local/*"; do
+    source $f
+  done
+fi
+
 # If not running interactively, don't do anything
 if [[ -n "$PS1" ]] ; then
 
@@ -63,10 +69,6 @@ if [[ -n "$PS1" ]] ; then
     VIRTUALENV_WRAPPER_SCRIPT=/usr/local/bin/virtualenvwrapper.sh
     if [ -f $VIRTUALENV_WRAPPER_SCRIPT ]; then
       source $VIRTUALENV_WRAPPER_SCRIPT
-    fi
-
-    if [ -f $HOME/.projectsrc ]; then
-        source $HOME/.projectsrc 
     fi
 
     #Syntax highlighting for less -- Removed
