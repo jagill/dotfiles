@@ -92,7 +92,7 @@ if [[ -n "$PS1" ]] ; then
     # Mercurial Prompt
     search_up ()
     (
-        while [ $PWD != "/" ]; do
+        while [ "$PWD" != "/" ]; do
             if [ -e "$1" ]; then
                 pwd
                 break
