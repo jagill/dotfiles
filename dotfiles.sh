@@ -21,7 +21,7 @@ fi
 [ -f $HOME/.bashrc ] || ln -s $CONFIG_DIR/bashrc_${arch} $HOME/.bashrc
 [ -f $HOME/.gitignore_global ] || ln -s $CONFIG_DIR/gitignore $HOME/.gitignore_global
 
-for f in bash_profile vimrc ackrc hgrc ctags gitconfig jshintrc tmux.conf; do
+for f in bash_profile inputrc vimrc ackrc hgrc ctags gitconfig jshintrc tmux.conf; do
   [ -f $HOME/.$f ] || ln -s $CONFIG_DIR/$f $HOME/.$f
 done
 
