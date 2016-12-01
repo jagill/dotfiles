@@ -43,6 +43,9 @@ set expandtab       " don't use tab characters
 set softtabstop=2   " make the tab key move 2 spaces
 set tabstop=4       " tabs show as 4 spaces. Makes them more obvious.
 
+" Search down into subfolders
+" Provides tab-completion for all file-related tasks
+set path+=**
 set wildmenu        " Show all possible word completions
 " Only complete up to points of ambiguity
 " You can also toggle through the matches by tab
@@ -62,6 +65,35 @@ set listchars=tab:▸\ ,eol:¬,trail:~,extends:>,precedes:< "Show invisble chara
 " set visualbell      " Don't audibly beep
 " set clipboard=unnamed   " Default for all unnamed yank/etc operations to store in system clipboard
 
+"""""""
+" From no_plugins talk
+"""""""
+
+" Create the `tags` file (may need to install ctags first)
+command! MakeTags !ctags -R .
+
+" AUTOCOMPLETE:
+" The good stuff is documented in |ins-completion|
+" HIGHLIGHTS:
+" - ^x^n for JUST this file
+" - ^x^f for filenames (works with our path trick!)
+" - ^x^] for tags only
+" - ^n for anything specified by the 'complete' option
+" NOW WE CAN:
+" - Use ^n and ^p to go back and forth in the suggestion list
+
+" FILE BROWSING:
+" Tweaks for browsing
+let g:netrw_banner=0        " disable annoying banner
+let g:netrw_browse_split=4  " open in prior window
+let g:netrw_altv=1          " open splits to the right
+let g:netrw_liststyle=3     " tree view
+let g:netrw_list_hide=netrw_gitignore#Hide()
+let g:netrw_list_hide.=',\(^\|\s\s\)\zs\.\S\+'
+" NOW WE CAN:
+" - :edit a folder to open a file browser
+" - <CR>/v/t to open in an h-split/v-split/tab
+" - check |netrw-browse-maps| for more mappings
 
 """""""""""""""""""""""""""""""""""""""""""""""""""
 " Switch syntax highlighting on
