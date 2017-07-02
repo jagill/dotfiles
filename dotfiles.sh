@@ -6,7 +6,7 @@ fi
 
 arch=$1
 
-if [ ! "$arch" == "macos" -o "$arch" == "ubuntu" -o "$arch" == "rh" ]; then
+if [ ! "$arch" == "macos" -a ! "$arch" == "ubuntu" -a ! "$arch" == "rh" ]; then
   echo "The architecture must be one of macos, ubuntu, rh." >&2
   exit 1
 fi
