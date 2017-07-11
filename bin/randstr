@@ -1,0 +1,11 @@
+#! /bin/sh
+
+# usage: randstr N
+# Produce a random string of length N
+
+if [ -z "$1" ]; then
+  echo "Please supply length of the random string."
+  exit 1
+fi
+
+head /dev/urandom | tr -dc A-Za-z0-9 | head -c $1

@@ -1,0 +1,64 @@
+#! /usr/bin/env python
+# vi: ft=python
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from collections import defaultdict
+
+def factor(n):
+    """Factor n into primes.
+
+    If n = p1**n1 * p2**n2 * ...
+    Return a dict {p1:n1, p2:n2, ...}
+    """
+    factors = defaultdict(int)
+    if n < 0:
+        factors[-1] = 1
+        n *= -1
+    elif n == 0:
+        return {0:1}
+    elif n == 1:
+        factors[1] = 1
+        return factors
+    # else n >= 2
+
+    fac = 2
+    on2 = True
+    # XXX: If we need to speed this up, use a seive to only check primes
+    while fac < n:
+        while n % fac == 0:
+            factors[fac] += 1
+            n //= fac
+        if on2:
+            on2 = False
+            fac += 1
+        else:
+            fac += 2
+
+    if n > 1:
+        factors[n] += 1
+
+    return factors
+
+
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser(description="Print the prime factorization of an integer.")
+    parser.add_argument('n', type=int, help='Integer to factor')
+    args = parser.parse_args()
+
+    factors = factor(args.n)
+    output = "{} = ".format(args.n)
+    sorted_factors = sorted(factors.keys())
+    output += " * ".join(["{}^{}".format(f, factors[f]) for f in sorted(factors.keys())])
+    print(output)
+
+
+
+
+
+
+

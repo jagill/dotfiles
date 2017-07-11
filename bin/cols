@@ -1,0 +1,134 @@
+#! /usr/bin/env python
+
+import os
+import re
+import sys
+# import logging
+import fileinput
+from functools import partial
+
+# logging.basicConfig(
+    # level=logging.DEBUG,
+    # stream=sys.stderr,
+# )
+
+
+def parse_slice(slice_str):
+    """Parse a slice string like ":", "2:", ":-4:-2"."""
+    if ':' not in slice_str:
+        # Interpret as a single position.
+        return int(slice_str)
+
+    def clean_idxs(s):
+        if s:
+            return int(s)
+        else:
+            return None
+
+    tokens = [clean_idxs(s) for s in slice_str.split(':')]
+    return slice(*tokens)
+
+
+def parse_slices(slice_str):
+    """Parse a sequence of slice strings separated by ','."""
+    if not slice_str:
+        return [slice(None)]
+    parts = slice_str.split(',')
+    # logging.debug('Found slice parts {}'.format(parts))
+    slices = [parse_slice(s) for s in parts]
+    return slices
+
+
+def parse_line(line, sep, outsep, slices=None, regex=False):
+    if regex:
+        tokens = sep.split(line)
+    else:
+        tokens = line.split(sep)
+    if slices is None:
+        out_tokens = tokens
+    else:
+        out_tokens = []
+        for sl in slices:
+            if isinstance(sl, int):
+                out_tokens.append(tokens[sl])
+            elif isinstance(sl, slice):
+                out_tokens += tokens[sl]
+            else:
+                raise Exception('Unknown slice option: {}'.format(sl))
+    return outsep.join(out_tokens)
+
+
+def cols(sep, outsep, cols, in_stream, out_stream, regex=False):
+    if sep == '\\t':
+        # Hard to pass this in as a literal
+        sep = '\t'
+    if outsep == '\\t':
+        # Hard to pass this in as a literal
+        outsep = '\t'
+    if sep is not None and outsep is None:
+        outsep = sep
+    if sep is None:
+        sep = r'\s+'
+        regex = True
+    if outsep is None:
+        outsep = ' '
+    if regex:
+        sep = re.compile(sep)
+    slices = parse_slices(cols)
+
+    # sep_rep = sep.pattern if hasattr(sep, 'pattern') else sep
+    # logging.info('Input sep {}'.format(sep_rep))
+    # logging.info('Output sep {}'.format(outsep))
+    # logging.info('Slices {}'.format(slices))
+
+    _parse_line = partial(parse_line, sep=sep, outsep=outsep, slices=slices, regex=regex)
+
+    for line in in_stream:
+        line = line.rstrip(os.linesep)
+        out_stream.write(_parse_line(line))
+        out_stream.write('\n')
+
+
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser(
+        description='Manipulate columns.',
+        epilog="""
+        The empty string '' can be supplied for either sep or outsep.  In the
+        former case, it will split on every character.  In the latter, it will
+        concat the columns with no spaces.
+
+        The output columns can be described with comma-separated python slice
+        notation, as "slice1,slice2,slice3,...".  If slice is a single integer,
+        just use that column.  If slice is of the form beg:end, start
+        (inclusive) with column beg, and end (exclusive) before end.  beg and
+        end can be negative integers, interpretted from the end of the line.
+        If beg or end is omitted, they default to 0 and the end of the line
+        respectively.  So ":-2" is the entire line, minus the last two columns.
+        A step argument can be added, like "beg:end:step"; this will iterate
+        through every step column from beg.)
+        """,
+        )
+    parser.add_argument('-s', '--sep',
+        help='Input separator.  Default whitespace.')
+    parser.add_argument('-S', '--outsep',
+        help='Output separator.  Default " " of sep (if specified).')
+    parser.add_argument('-r', '--regex', action='store_true',
+        help='Interpret sep as a python regex.')
+    parser.add_argument('-c', '--cols',
+        help='Output columns in this order, using (0-indexed) python slice notation.')
+    parser.add_argument('file_names', nargs='*',
+        help='Names of files to parse.  If not given, read from stdin.')
+    args = parser.parse_args()
+    # logging.debug('ARGS {}'.format(args))
+
+    in_stream = fileinput.input(args.file_names)
+    out_stream = sys.stdout
+    cols(sep=args.sep,
+         outsep=args.outsep,
+         cols=args.cols,
+         in_stream=in_stream,
+         out_stream=out_stream,
+         regex=args.regex,
+         )
+

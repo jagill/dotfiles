@@ -1,0 +1,173 @@
+#! /usr/bin/env python
+#vim: ft=python
+
+import sys
+from itertools import islice
+from collections import deque
+import fileinput
+
+# TODO: Accept additive stops, like 2:+5:2
+
+class LoopQueue:
+    """
+    This is a queue of a fixed size that returns evicted elements.
+    
+    When it is full and it is pushed to, it will return the evicted item.  We
+    want it to have constant time pushes, pops, and memory use, at least when
+    it is full.
+    """
+
+    def __init__(self, size):
+        self.queue = deque([], size + 1)
+        self.size = size
+
+    def __iter__(self):
+        return iter(self.queue)
+
+    def __len__(self):
+        return len(self.queue)
+
+    def push(self, x):
+        self.queue.append(x)
+        if len(self.queue) > self.size:
+            return self.queue.popleft()
+
+    def pop(self):
+        return self.queue.popleft()
+
+
+def _parse_slice_part(slice_part):
+    if slice_part is None or slice_part == '':
+        return None
+    return int(slice_part)
+
+
+def parse_slice(slice_str):
+    """Parse strings like -5:15:2 into a structured dict."""
+    parts = slice_str.split(':')
+    # A slice_str like "3" just gets the third line.  Use 3: or :3 for a range.
+    if len(parts) == 1:
+        # XXX: What about slice_str = "-1"?
+        start = int(parts[0])
+        if start != -1:
+            stop = start + 1
+        else:
+            stop = None
+        parts.append(stop)
+    if len(parts) == 2:
+        parts.append(None)
+    
+    # add = parts[1] is not None and parts[1][0] == '+'
+
+    parts = map(_parse_slice_part, parts)
+    
+    return dict(
+        start=parts[0],
+        stop=parts[1],
+        step=parts[2],
+        # add=add,
+    )
+
+
+def main(opts, stdin, stdout):
+    start = opts['start'] or 0
+    stop = opts['stop']
+    step = opts['step']
+
+    if step is not None:
+        if step <= 0:
+            raise Exception("Non-positive steps are not supported.")
+        elif step == 1:
+            # The same, with less computation.
+            step = None
+
+    neg_start = start < 0
+    neg_stop = stop is not None and stop < 0
+    pos_stop = stop is not None and stop >= 0
+
+    if not neg_start and not neg_stop:
+        # Simplest case
+        for line in islice(stdin, start, stop, step):
+            stdout.write(line)
+
+    elif neg_start and not neg_stop:
+        start_queue = LoopQueue(abs(start))
+
+        for n, line in enumerate(stdin):
+            if pos_stop and n >= stop + abs(start):
+                # Don't go on forever! At this point start_queue is all Nones.
+                break
+            if pos_stop and n >= stop:
+                start_queue.push(None)
+            else:
+                start_queue.push(line)
+
+        for n, line in enumerate(start_queue):
+            if line is None:
+                break
+            if step is not None and n % step != 0:
+                continue
+            stdout.write(line)
+
+    elif not neg_start and neg_stop:
+        stop_length = abs(stop)
+        stop_queue = LoopQueue(stop_length)
+
+        for n, line in enumerate(stdin):
+            if n < start:
+                continue
+            val = stop_queue.push(line)
+            if val is not None:
+                # val's index is actually n - stop_length)
+                if step and (n - stop_length - start) % step != 0:
+                    continue
+                stdout.write(val)
+
+    else:  # neg_start and neg_stop
+        if stop < start:
+            # Nothing to do!
+            return
+
+        start_queue = LoopQueue(abs(start) - abs(stop))
+        stop_queue = LoopQueue(abs(stop))
+
+        # We'll need to keep a deque, popleft-ing off the earliest
+        # item and writing it to stdout.
+        for n, line in enumerate(stdin):
+            val = stop_queue.push(line)
+            if val is not None:
+                start_queue.push(val)
+
+        for n, line in enumerate(start_queue):
+            if step and n % step != 0:
+                continue
+            stdout.write(line)
+
+
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser(description='Slice input lines')
+    parser.add_argument('slice', help='Python-like slice, like start:stop:step.')
+    parser.add_argument('file_names', nargs='*', help='Names of files to parse.  If not given, read from stdin.')
+
+    # Want to allow people to use `slice -5`.
+    argv = sys.argv[1:]
+    try:
+        parse_slice(argv[0])
+    except ValueError:
+        pass
+    else:
+        argv.insert(0, '--')
+    args = parser.parse_args(argv)
+
+    # Ignore filenames for now, but use them soon.
+    try:
+        slice_opts = parse_slice(args.slice)
+    except ValueError:
+        sys.stdout.write("ERROR: Unable to parse %s as a slice argument.\n" % args.slice)
+        parser.print_help()
+        sys.exit(1)
+    stdin = fileinput.input(args.file_names)
+    main(slice_opts, stdin, sys.stdout)
+
+
