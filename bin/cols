@@ -1,16 +1,14 @@
 #! /usr/bin/env python
+#vim: ft=python
 
 import os
 import re
 import sys
-# import logging
+import logging
 import fileinput
 from functools import partial
 
-# logging.basicConfig(
-    # level=logging.DEBUG,
-    # stream=sys.stderr,
-# )
+log = logging.getLogger('cols')
 
 
 def parse_slice(slice_str):
@@ -39,26 +37,33 @@ def parse_slices(slice_str):
     return slices
 
 
-def parse_line(line, sep, outsep, slices=None, regex=False):
-    if regex:
-        tokens = sep.split(line)
-    else:
-        tokens = line.split(sep)
-    if slices is None:
-        out_tokens = tokens
-    else:
-        out_tokens = []
-        for sl in slices:
-            if isinstance(sl, int):
-                out_tokens.append(tokens[sl])
-            elif isinstance(sl, slice):
-                out_tokens += tokens[sl]
-            else:
-                raise Exception('Unknown slice option: {}'.format(sl))
-    return outsep.join(out_tokens)
+def parse_line(line, sep, outsep, slices=None, regex=False, just_count=False):
+    try:
+        if regex:
+            tokens = sep.split(line)
+        else:
+            tokens = line.split(sep)
+        if slices is None:
+            out_tokens = tokens
+        else:
+            out_tokens = []
+            for sl in slices:
+                if isinstance(sl, int):
+                    out_tokens.append(tokens[sl])
+                elif isinstance(sl, slice):
+                    out_tokens += tokens[sl]
+                else:
+                    raise Exception('Unknown slice option: {}'.format(sl))
+        if just_count:
+            return str(len(out_tokens))
+        else:
+            return outsep.join(out_tokens)
+    except Exception as e:
+        log.warning('Error in line {}: {}'.format(line, e))
+        raise
 
 
-def cols(sep, outsep, cols, in_stream, out_stream, regex=False):
+def cols(sep, outsep, cols, in_stream, out_stream, regex=False, just_count=False):
     if sep == '\\t':
         # Hard to pass this in as a literal
         sep = '\t'
@@ -81,7 +86,8 @@ def cols(sep, outsep, cols, in_stream, out_stream, regex=False):
     # logging.info('Output sep {}'.format(outsep))
     # logging.info('Slices {}'.format(slices))
 
-    _parse_line = partial(parse_line, sep=sep, outsep=outsep, slices=slices, regex=regex)
+    _parse_line = partial(parse_line, sep=sep, outsep=outsep, slices=slices,
+                          regex=regex, just_count=just_count)
 
     for line in in_stream:
         line = line.rstrip(os.linesep)
@@ -117,10 +123,17 @@ if __name__ == '__main__':
         help='Interpret sep as a python regex.')
     parser.add_argument('-c', '--cols',
         help='Output columns in this order, using (0-indexed) python slice notation.')
+    parser.add_argument('-C', '--count', action='store_true',
+        help="Don't output columns, instead output the number of columns that would have been printed.")
     parser.add_argument('file_names', nargs='*',
         help='Names of files to parse.  If not given, read from stdin.')
     args = parser.parse_args()
     # logging.debug('ARGS {}'.format(args))
+
+    logging.basicConfig(
+        level=logging.DEBUG,
+        stream=sys.stderr,
+    )
 
     in_stream = fileinput.input(args.file_names)
     out_stream = sys.stdout
@@ -130,5 +143,6 @@ if __name__ == '__main__':
          in_stream=in_stream,
          out_stream=out_stream,
          regex=args.regex,
+         just_count=args.count,
          )
 

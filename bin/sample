@@ -28,6 +28,11 @@ def sample(num, frac, in_stream, out_stream, skip_first=False):
             if len(heap) < num:
                 heappush(heap, item)
             else:
+                # Check to see if the item should be on the queue
+                if item[0] < heap[0][0]:
+                    # heap is a min_heap; we keep the n biggest and this item
+                    # is too small.
+                    continue
                 heappushpop(heap, item)
         # order them by their original order
         for item in sorted(heap, key=itemgetter(1)):
