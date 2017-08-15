@@ -125,6 +125,12 @@ if [[ -n "$PS1" ]] ; then
     # Build the prompt
     __prompt () {
       local EXIT=${PIPESTATUS[@]}             # This needs to be first
+      for x in $EXIT; do
+        if [ "$x" != 0 ]; then
+          ERROR=1
+        fi
+      done
+
       PS1=""
 
       CHROOT="${debian_chroot:+($debian_chroot)}"
@@ -173,10 +179,10 @@ if [[ -n "$PS1" ]] ; then
         HG_PROMPT=""
       fi
 
-      if [ "$EXIT" != 0 ]; then
+      if [ "$ERROR" = 1 ]; then
         EXIT_PROMPT="${RED}${EXIT}${OFF}"      # Add red exit code if non 0
       else
-        EXIT_PROMPT="${GREEN}0${OFF}"
+        EXIT_PROMPT="${GREEN}${EXIT}${OFF}"
       fi
 
       PS1="${CHROOT}${USER_HOST}${WHITE}:${BBLUE}\w"
