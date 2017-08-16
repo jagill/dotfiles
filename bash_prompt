@@ -125,11 +125,10 @@ if [[ -n "$PS1" ]] ; then
     # Build the prompt
     __prompt () {
       local EXIT=${PIPESTATUS[@]}             # This needs to be first
+      ERROR=0
       for x in $EXIT; do
         if [ "$x" != 0 ]; then
           ERROR=1
-        else
-          ERROR=0
         fi
       done
 
