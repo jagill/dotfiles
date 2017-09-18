@@ -27,9 +27,27 @@ if [[ -n "$PS1" ]] ; then
     HISTSIZE=130000
     HISTFILESIZE=-1
 
+    # Use standard ISO 8601 timestamp
+    # %F equivalent to %Y-%m-%d
+    # %T equivalent to %H:%M:%S (24-hours format)
+    HISTTIMEFORMAT='%F %T '
+
     # check the window size after each command and, if necessary,
     # update the values of LINES and COLUMNS.
     shopt -s checkwinsize
+
+    # Turn on recursive globbing (enables ** to recurse all directories)
+    shopt -s globstar 2> /dev/null
+
+    # Case-insensitive globbing (used in pathname expansion)
+    # shopt -s nocaseglob;
+
+    # Display matches for ambiguous patterns at first tab press
+    bind "set show-all-if-ambiguous on"
+
+    # This allows you to bookmark your favorite places across the file system
+    # Define a variable containing a path and you will be able to cd into it regardless of the directory you're in
+    # shopt -s cdable_vars
 
     # make less more friendly for non-text input files, see lesspipe(1)
     [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
