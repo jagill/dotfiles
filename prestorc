@@ -1,15 +1,45 @@
+IDEA_DIR=~/IdeaProjects
+PRESTO_DIR=$IDEA_DIR/presto
+PRESTO_FB_DIR=$IDEA_DIR/presto-facebook
+
 presto_fast_build() {
-  (cd ~/IdeaProjects/presto && ./mvnw clean install -DskipTests -Dmaven.javadoc.skip=true -T C1 -pl '!presto-docs,!presto-server-rpm')
+  (cd $PRESTO_DIR && ./mvnw install -DskipTests -Dmaven.javadoc.skip=true -T C1 -pl '!presto-docs,!presto-server-rpm')
+}
+
+presto_fast_geospatial() {
+  (cd $PRESTO_DIR && ./mvnw install -DskipTests -Dmaven.javadoc.skip=true -T C1 -pl 'presto-geospatial-toolkit,presto-geospatial,presto-main')
 }
 
 presto_fast_build_no_checks() {
-  (cd ~/IdeaProjects/presto && ./mvnw clean install -DskipTests -Dair.check.skip-all=true -Dmaven.javadoc.skip=true -T C1 -pl '!presto-docs,!presto-server-rpm')
+  (cd $PRESTO_DIR && ./mvnw clean install -DskipTests -Dair.check.skip-all=true -Dmaven.javadoc.skip=true -T C1 -pl '!presto-docs,!presto-server-rpm')
 }
 
 facebook_presto_fast_build() {
-  (cd ~/IdeaProjects/presto-facebook && mvn clean install -DskipTests -T C1)
+  (cd $PRESTO_FB_DIR && mvn clean install -DskipTests -T C1)
 }
 
 deploy_facebook_presto(){
-  (cd ~/IdeaProjects/presto-facebook && mvn clean deploy -DskipTests -pl presto-facebook)
+  (cd $PRESTO_DIR \
+    && mvn clean install -T C1 -DskipTests \
+    && cd $PRESTO_FB_DIR \
+    && mvn clean install -T C1 -DskipTests \
+    && mvn deploy -T C1 -pl presto-facebook)
 }
+
+presto_test_geospatial() {
+  (cd $PRESTO_DIR && ./mvnw test -Dair.check.skip-all=true -Dmaven.javadoc.skip=true -T C1 -pl presto-geospatial,presto-geospatial-toolkit)
+}
+
+alias remote_vnc='ssh -Y -L 5901:localhost:5901 devvm118.frc2.facebook.com'
+
+presto_sync_ssl() {
+  sudo scp $USER@$USER.sb.facebook.com:"/var/facebook/rootcanal/ca.pem /var/facebook/credentials/$USER/x509/$USER.pem" /tmp/
+  sudo mkdir -p /var/facebook/rootcanal/
+  sudo mv /tmp/ca.pem /var/facebook/rootcanal/ca.pem
+  sudo chmod 644 /var/facebook/rootcanal/ca.pem
+  sudo mkdir -p /var/facebook/x509_identities/
+  sudo mv /tmp/$USER.pem /var/facebook/x509_identities/client.pem
+  sudo chmod 644 /var/facebook/x509_identities/client.pem
+}
+
+export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
