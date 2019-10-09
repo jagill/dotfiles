@@ -10,6 +10,10 @@ if [ -f $CONFIG/bashrc ]; then
     source $CONFIG/bashrc
 fi
 
+if [ -f $CONFIG/prestorc ]; then
+    source $CONFIG/prestorc
+fi
+
 PATH=/usr/local/sbin:$PATH
 
 if [ -d $HOME/bin ]; then

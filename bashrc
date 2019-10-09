@@ -24,7 +24,7 @@ if [[ -n "$PS1" ]] ; then
     shopt -s histappend
 
     # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-    HISTSIZE=130000
+    HISTSIZE=10000
     HISTFILESIZE=-1
 
     # Use standard ISO 8601 timestamp

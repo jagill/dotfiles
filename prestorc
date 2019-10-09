@@ -1,0 +1,15 @@
+presto_fast_build() {
+  (cd ~/IdeaProjects/presto && ./mvnw clean install -DskipTests -Dmaven.javadoc.skip=true -T C1 -pl '!presto-docs,!presto-server-rpm')
+}
+
+presto_fast_build_no_checks() {
+  (cd ~/IdeaProjects/presto && ./mvnw clean install -DskipTests -Dair.check.skip-all=true -Dmaven.javadoc.skip=true -T C1 -pl '!presto-docs,!presto-server-rpm')
+}
+
+facebook_presto_fast_build() {
+  (cd ~/IdeaProjects/presto-facebook && mvn clean install -DskipTests -T C1)
+}
+
+deploy_facebook_presto(){
+  (cd ~/IdeaProjects/presto-facebook && mvn clean deploy -DskipTests -pl presto-facebook)
+}
