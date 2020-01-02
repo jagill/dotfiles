@@ -151,23 +151,35 @@ if __name__ == '__main__':
     parser.add_argument('file_names', nargs='*', help='Names of files to parse.  If not given, read from stdin.')
 
     # Want to allow people to use `slice -5`.
-    argv = sys.argv[1:]
-    try:
-        parse_slice(argv[0])
-    except ValueError:
-        pass
+    if len(sys.argv) > 1:
+        argv = sys.argv[1:]
+        try:
+            parse_slice(argv[0])
+        except ValueError:
+            pass
+        else:
+            argv.insert(0, '--')
+        args = parser.parse_args(argv)
     else:
-        argv.insert(0, '--')
-    args = parser.parse_args(argv)
+        # This will give the parser help.
+        args = parser.parse_args()
 
-    # Ignore filenames for now, but use them soon.
     try:
         slice_opts = parse_slice(args.slice)
     except ValueError:
         sys.stdout.write("ERROR: Unable to parse %s as a slice argument.\n" % args.slice)
         parser.print_help()
         sys.exit(1)
-    stdin = fileinput.input(args.file_names)
-    main(slice_opts, stdin, sys.stdout)
+
+    in_stream = fileinput.input(args.file_names)
+    out_stream = sys.stdout
+    try:
+        main(slice_opts, in_stream, out_stream)
+    except IOError as e:
+        if e.errno == errno.EPIPE:
+            # SIGPIPE exit code
+            sys.exit(128 + 13)
+        else:
+            raise
 
 

@@ -4,6 +4,7 @@
 import os
 import re
 import sys
+import errno
 import logging
 import fileinput
 from functools import partial
@@ -137,12 +138,19 @@ if __name__ == '__main__':
 
     in_stream = fileinput.input(args.file_names)
     out_stream = sys.stdout
-    cols(sep=args.sep,
-         outsep=args.outsep,
-         cols=args.cols,
-         in_stream=in_stream,
-         out_stream=out_stream,
-         regex=args.regex,
-         just_count=args.count,
-         )
+    try:
+        cols(sep=args.sep,
+             outsep=args.outsep,
+             cols=args.cols,
+             in_stream=in_stream,
+             out_stream=out_stream,
+             regex=args.regex,
+             just_count=args.count,
+             )
+    except IOError as e:
+        if e.errno == errno.EPIPE:
+            # SIGPIPE exit code
+            sys.exit(128 + 13)
+        else:
+            raise
 
