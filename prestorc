@@ -2,32 +2,43 @@ IDEA_DIR=~/IdeaProjects
 PRESTO_DIR=$IDEA_DIR/presto
 PRESTO_FB_DIR=$IDEA_DIR/presto-facebook
 
-presto_fast_build() {
-  (cd $PRESTO_DIR && ./mvnw install -DskipTests -Dmaven.javadoc.skip=true -T C1 -pl '!presto-docs,!presto-server-rpm')
+fastProjects='!presto-docs,!presto-server-rpm,!presto-verifier,!presto-product-tests'
+geoProjects='presto-geospatial-toolkit,presto-geospatial,presto-main'
+
+presto-fast-build() {
+  (cd $PRESTO_DIR && ./mvnw install -DskipTests -Dmaven.javadoc.skip=true -T C1 -pl $fastProjects)
 }
 
-presto_fast_geospatial() {
-  (cd $PRESTO_DIR && ./mvnw install -DskipTests -Dmaven.javadoc.skip=true -T C1 -pl 'presto-geospatial-toolkit,presto-geospatial,presto-main')
+presto-clean-build() {
+  (cd $PRESTO_DIR && ./mvnw clean install -DskipTests -Dmaven.javadoc.skip=true -T C1 -pl $fastProjects)
 }
 
-presto_fast_build_no_checks() {
+presto-fast-geospatial() {
+  (cd $PRESTO_DIR && ./mvnw install -DskipTests -Dmaven.javadoc.skip=true -T C1 -pl $geoProjects)
+}
+
+presto-clean-geospatial() {
+  (cd $PRESTO_DIR && ./mvnw clean install -DskipTests -Dmaven.javadoc.skip=true -T C1 -pl $geoProjects)
+}
+
+presto-test-geospatial() {
+  (cd $PRESTO_DIR && ./mvnw test -Dmaven.javadoc.skip=true -T C1 -pl presto-geospatial-toolkit,presto-geospatial)
+}
+
+presto-fast-build-no-checks() {
   (cd $PRESTO_DIR && ./mvnw clean install -DskipTests -Dair.check.skip-all=true -Dmaven.javadoc.skip=true -T C1 -pl '!presto-docs,!presto-server-rpm')
 }
 
-facebook_presto_fast_build() {
-  (cd $PRESTO_FB_DIR && mvn clean install -DskipTests -T C1)
+facebook-presto-fast-build() {
+  (cd $PRESTO_FB_DIR && mvn install -DskipTests -T C1)
 }
 
-deploy_facebook_presto(){
+deploy-facebook-presto(){
   (cd $PRESTO_DIR \
     && mvn clean install -T C1 -DskipTests \
     && cd $PRESTO_FB_DIR \
     && mvn clean install -T C1 -DskipTests \
     && mvn deploy -T C1 -pl presto-facebook)
-}
-
-presto_test_geospatial() {
-  (cd $PRESTO_DIR && ./mvnw test -Dair.check.skip-all=true -Dmaven.javadoc.skip=true -T C1 -pl presto-geospatial,presto-geospatial-toolkit)
 }
 
 alias remote_vnc='ssh -Y -L 5901:localhost:5901 devvm118.frc2.facebook.com'

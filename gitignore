@@ -23,6 +23,12 @@ Icon?
 project.xcworkspace/
 xcuserdata/
 
+# VScode
+.vscode/
+
+# IntelliJ
+.idea/
+
 # Generated files
 *.[oa]
 *.py[co]

@@ -20,10 +20,16 @@ if [ -d $HOME/bin ]; then
     PATH=$PATH:$HOME/bin
 fi
 if [ -d $HOME/Dropbox/bin ]; then
-    PATH=$PATH:$HOME/Dropbox/bin:/usr/local/share/npm/bin
+    PATH=$PATH:$HOME/Dropbox/bin
 fi
 if [ -d /usr/local/share/npm/bin ]; then
     PATH=$PATH:/usr/local/share/npm/bin
+fi
+if [ -d /opt/yum/bin ]; then
+    PATH=$PATH:/opt/yum/bin
+fi
+if [ -d /opt/homebrew/bin ]; then
+    PATH=/opt/homebrew/bin:$PATH
 fi
 
 # If not running interactively, don't do anything
