@@ -18,6 +18,7 @@ Plugin 'vim-scripts/Mark.git'
 Plugin 'vim-scripts/ReplaceWithRegister.git'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'majutsushi/tagbar'
+Plugin 'kchmck/vim-coffee-script'
 
 filetype plugin indent on  " Re-enable this after Vundle Plugins.
 
