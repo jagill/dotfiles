@@ -3,9 +3,3 @@ CONFIG=~/Dropbox/config
 if [ -f "$CONFIG/.bash_aliases" ]; then
     . ~/.bash_aliases
 fi
-
-
-alias pyg='pygmentize -g'
-alias meteor5='/Users/jag/projects/meteor/meteor'
-alias mochac='node_modules/.bin/mocha --compilers coffee:coffee-script/register'
-

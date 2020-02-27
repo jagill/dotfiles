@@ -40,7 +40,7 @@ if [[ -n "$PS1" ]] ; then
     launchctl setenv PATH $PATH
     # eval "$(rbenv init -)"
 
-    export NVM_DIR="/Users/jag/.nvm"
+    export NVM_DIR="/Users/jagill/.nvm"
     # This takes about 750ms; is there a way to speed it up?
     # [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"  # This loads nvm
 
