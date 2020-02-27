@@ -13,15 +13,15 @@ presto-clean-build() {
   (cd $PRESTO_DIR && ./mvnw clean install -DskipTests -Dmaven.javadoc.skip=true -T C1 -pl $fastProjects)
 }
 
-presto-fast-geospatial() {
+presto-geospatial-fast-build() {
   (cd $PRESTO_DIR && ./mvnw install -DskipTests -Dmaven.javadoc.skip=true -T C1 -pl $geoProjects)
 }
 
-presto-clean-geospatial() {
+presto-geospatial-clean-build() {
   (cd $PRESTO_DIR && ./mvnw clean install -DskipTests -Dmaven.javadoc.skip=true -T C1 -pl $geoProjects)
 }
 
-presto-test-geospatial() {
+presto-geospatial-test() {
   (cd $PRESTO_DIR && ./mvnw test -Dmaven.javadoc.skip=true -T C1 -pl presto-geospatial-toolkit,presto-geospatial)
 }
 
@@ -29,11 +29,11 @@ presto-fast-build-no-checks() {
   (cd $PRESTO_DIR && ./mvnw clean install -DskipTests -Dair.check.skip-all=true -Dmaven.javadoc.skip=true -T C1 -pl '!presto-docs,!presto-server-rpm')
 }
 
-facebook-presto-fast-build() {
+presto-facebook-fast-build() {
   (cd $PRESTO_FB_DIR && mvn install -DskipTests -T C1)
 }
 
-deploy-facebook-presto(){
+presto-facebook-deploy(){
   (cd $PRESTO_DIR \
     && mvn clean install -T C1 -DskipTests \
     && cd $PRESTO_FB_DIR \
