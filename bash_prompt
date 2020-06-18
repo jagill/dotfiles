@@ -137,12 +137,6 @@ if [[ -n "$PS1" ]] ; then
       CHROOT="${debian_chroot:+($debian_chroot)}"
       USER_HOST="${LIME}\u${GREEN}@${LIME}$PROMPT_HOST"
 
-      if [ -n "$VIRTUAL_ENV" ]; then
-        VIRTUAL_ENV_PROMPT=" ${WHITE}${BOLD}{$(basename $VIRTUAL_ENV)}"
-      else
-        VIRTUAL_ENV_PROMPT=""
-      fi
-
 # TODO: Add a NVM prompt
 
       # Git
@@ -180,6 +174,24 @@ if [[ -n "$PS1" ]] ; then
         HG_PROMPT=""
       fi
 
+      # Python
+
+      _CONDA_ENV="${CONDA_PROMPT_MODIFIER:1:-2}"
+      if [ "$_CONDA_ENV" != base ]; then
+          CONDA_ENV=$_CONDA_ENV
+      fi
+      if [ -n "$PYENV_VERSION$CONDA_ENV" ]; then
+        PYTHON_PROMPT="$(python --version | cut -d' ' -f2)"
+
+        if [ -n "$CONDA_ENV" ]; then
+            PYTHON_PROMPT+=":${CONDA_ENV}"
+        fi
+      fi
+
+      if [ -n "$PYTHON_PROMPT" ]; then
+        PYTHON_PROMPT=" ${WHITE}${BOLD}py${PYTHON_PROMPT}"
+      fi
+
       if [ "$ERROR" = 1 ]; then
         EXIT_PROMPT="${RED}${EXIT}${OFF}"      # Add red exit code if non 0
       else
@@ -187,13 +199,15 @@ if [[ -n "$PS1" ]] ; then
       fi
 
       PS1="${CHROOT}${USER_HOST}${WHITE}:${BBLUE}\w"
-      PS1+="$VIRTUAL_ENV_PROMPT"
+      PS1+="$PYTHON_PROMPT"
       PS1+="$GIT_PROMPT"
       PS1+="$HG_PROMPT"
       PS1+="\n$EXIT_PROMPT $BOLD\$$OFF "
 
       
     }
+
+
     
     export PROMPT_COMMAND=__prompt # Use __prompt to generate prompt after each command
     unset color_prompt force_color_prompt
