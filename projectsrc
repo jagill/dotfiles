@@ -1,0 +1,6 @@
+export VPN_HOST='Americas East'
+
+alias vpn=/opt/cisco/anyconnect/bin/vpn
+vpn-start () { printf "$1" | /opt/cisco/anyconnect/bin/vpn -s connect "$VPN_HOST"; }
+
+alias vpn-stop='/opt/cisco/anyconnect/bin/vpn disconnect'
