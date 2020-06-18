@@ -1,7 +1,8 @@
 # vim: ft=sh
 export CONFIG=$HOME/dotfiles
 
-export BASH_COMPLETION_DIR="/usr/local/etc/bash_completion.d"
+#export BASH_COMPLETION_DIR="/usr/local/etc/bash_completion.d"
+export BASH_COMPLETION_DIR="/opt/homebrew/etc/bash_completion.d/"
 export GIT_BASH_PROMPT="$BASH_COMPLETION_DIR/git-prompt.sh"
 
 # Default mac PATH: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin
@@ -12,6 +13,10 @@ fi
 
 if [ -f $CONFIG/prestorc ]; then
     source $CONFIG/prestorc
+fi
+
+if [ -f $CONFIG/projectsrc ]; then
+    source $CONFIG/projectsrc
 fi
 
 PATH=/usr/local/sbin:$PATH
@@ -31,18 +36,25 @@ fi
 if [ -d /opt/homebrew/bin ]; then
     PATH=/opt/homebrew/bin:$PATH
 fi
+if [ -d /usr/local/Cellar/ruby/2.5.1/bin ]; then
+    PATH=/usr/local/Cellar/ruby/2.5.1/bin:$PATH
+fi
+RACKET_PATH="/Applications/Racket v7.6/bin"
+if [ -d "$RACKET_PATH" ]; then
+    PATH="$RACKET_PATH":$PATH
+fi
 
 # If not running interactively, don't do anything
 if [[ -n "$PS1" ]] ; then
     export CLICOLOR=1
     export LSCOLORS=GxFxCxDxBxegedabagaced
 
-    launchctl setenv PATH $PATH
-    # eval "$(rbenv init -)"
-
     export NVM_DIR="/Users/jagill/.nvm"
-    # This takes about 750ms; is there a way to speed it up?
-    # [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"  # This loads nvm
 
+    # This takes about 450ms; is there a way to speed it up?
+    # [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"  # This loads nvm
+    # [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+    eval "$(pyenv init -)"
 fi #endif for $PS1
 

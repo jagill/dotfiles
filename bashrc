@@ -24,7 +24,7 @@ if [[ -n "$PS1" ]] ; then
     shopt -s histappend
 
     # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-    HISTSIZE=10000
+    HISTSIZE=5000
     HISTFILESIZE=-1
 
     # Use standard ISO 8601 timestamp
@@ -83,14 +83,16 @@ if [[ -n "$PS1" ]] ; then
 
 
     export WORKON_HOME=~/.envs
-    # This takes 200ms; is there a way to speed it up?
+    # This takes 300ms; is there a way to speed it up?
     VIRTUALENV_WRAPPER_SCRIPT=/usr/local/bin/virtualenvwrapper.sh
-    if [ -f $VIRTUALENV_WRAPPER_SCRIPT ]; then
-      source $VIRTUALENV_WRAPPER_SCRIPT
-    fi
+    #if [ -f $VIRTUALENV_WRAPPER_SCRIPT ]; then
+      #source $VIRTUALENV_WRAPPER_SCRIPT
+    #fi
 
     #Syntax highlighting for less -- Removed
     #export LESSOPEN="| /usr/local/bin/src-hilite-lesspipe.sh %s"
     export LESS=' -R '
+
+    export MAPBOX_ACCESS_TOKEN=pk.eyJ1IjoiamFtZXNhZ2lsbCIsImEiOiJjazJhbDc2em8yamJ2M21waDFzanZlcHQ4In0.oImUf1psxXnvDuMm7qrxnA
 
 fi #endif for $PS1
