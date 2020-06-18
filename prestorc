@@ -29,8 +29,16 @@ presto-fast-build-no-checks() {
   (cd $PRESTO_DIR && ./mvnw clean install -DskipTests -Dair.check.skip-all=true -Dmaven.javadoc.skip=true -T C1 -pl '!presto-docs,!presto-server-rpm')
 }
 
+presto-facebook-clean-build() {
+  (cd $PRESTO_FB_DIR && mvn clean install -DskipTests -T C1)
+}
+
 presto-facebook-fast-build() {
   (cd $PRESTO_FB_DIR && mvn install -DskipTests -T C1)
+}
+
+presto-facebook-test() {
+  (cd $PRESTO_FB_DIR && mvn test -T C1)
 }
 
 presto-facebook-deploy(){
