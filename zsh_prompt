@@ -48,12 +48,12 @@ git_info() {
   fi
 
   local NUM_DELETED="$(git ls-files --deleted --exclude-standard 2> /dev/null | wc -l | tr -d ' ')"
-  local NUM_MODIFIED="$[$(git ls-files --modified --exclude-standard 2> /dev/null | wc -l | tr -d ' ') - $NUM_DELETED]"
+  local NUM_STAGED="$(git diff --name-status --staged | grep "^M" 2> /dev/null | wc -l | tr -d ' ')"
+  local NUM_MODIFIED="$[$(git ls-files --modified --exclude-standard 2> /dev/null | wc -l | tr -d ' ') - $NUM_DELETED - $NUM_STAGED]"
   if [ "$NUM_MODIFIED" -gt 0 ]; then
     STATUS+=( "${MODIFIED/NUM/$NUM_MODIFIED}" )
   fi
 
-  local NUM_STAGED="$(git diff --name-only --staged 2> /dev/null | wc -l | tr -d ' ')"
   if [ "$NUM_STAGED" -gt 0 ]; then
     STATUS+=( "${STAGED/NUM/$NUM_STAGED}" )
   fi
