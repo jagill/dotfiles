@@ -21,6 +21,7 @@ git_info() {
   local UNTRACKED="%{$fg[magenta]%}?NUM%{$reset_color%}"
   local MODIFIED="%{$fg[yellow]%}●NUM%{$reset_color%}"
   local STAGED="%{$fg[green]%}●NUM%{$reset_color%}"
+  local MERGING="%F{#ffaf00}#NUM%{$reset_color%}"
   local DELETED="%{$fg[cyan]%}!NUM%{$reset_color%}"
 
   local -a DIVERGENCES
@@ -36,22 +37,29 @@ git_info() {
     DIVERGENCES+=( "${BEHIND//NUM/$NUM_BEHIND}" )
   fi
 
-
   local GIT_DIR="$(git rev-parse --git-dir 2> /dev/null)"
   if [ -n $GIT_DIR ] && test -r $GIT_DIR/MERGE_HEAD; then
     STATUS+=( "$MERGING" )
   fi
 
-  local NUM_UNTRACKED="$(git ls-files --other --exclude-standard 2> /dev/null | wc -l | tr -d ' ')"
+  INDEX=$(command git status --porcelain | cut -d' ' -f1 2> /dev/null)
+  NUM_UNTRACKED=$(($(echo "$INDEX" | grep '?' | wc -l)))
+  NUM_MODIFIED=$(( $(echo "$INDEX" | grep '^ M' | wc -l) + $(echo $INDEX | grep '^AM' | wc -l) + $(echo "$INDEX" | grep '^ T' | wc -l) ))
+  NUM_MERGING=$(($(echo "$INDEX" | grep 'U' | wc -l)))
+  NUM_STAGED=$(( $(echo "$INDEX" | grep '^A' | wc -l) + $(echo $INDEX | grep '^M' | wc -l) ))
+  NUM_DELETED=$(($(echo "$INDEX" | grep 'D' | wc -l)))
+
+
   if [ "$NUM_UNTRACKED" -gt 0 ]; then
     STATUS+=( "${UNTRACKED/NUM/$NUM_UNTRACKED}" )
   fi
 
-  local NUM_DELETED="$(git ls-files --deleted --exclude-standard 2> /dev/null | wc -l | tr -d ' ')"
-  local NUM_STAGED="$(git diff --name-status --staged | grep "^M" 2> /dev/null | wc -l | tr -d ' ')"
-  local NUM_MODIFIED="$[$(git ls-files --modified --exclude-standard 2> /dev/null | wc -l | tr -d ' ') - $NUM_DELETED - $NUM_STAGED]"
   if [ "$NUM_MODIFIED" -gt 0 ]; then
     STATUS+=( "${MODIFIED/NUM/$NUM_MODIFIED}" )
+  fi
+
+  if [ "$NUM_MERGING" -gt 0 ]; then
+    STATUS+=( "${MERGING/NUM/$NUM_MERGING}" )
   fi
 
   if [ "$NUM_STAGED" -gt 0 ]; then
