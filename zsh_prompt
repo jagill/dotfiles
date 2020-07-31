@@ -13,7 +13,12 @@ git_info() {
   ! git rev-parse --is-inside-work-tree > /dev/null 2>&1 && return
 
   # Git branch/tag, or name-rev if on detached head
-  local GIT_LOCATION=${$(git symbolic-ref -q HEAD || git name-rev --name-only --no-undefined --always HEAD)#(refs/heads/|tags/)}
+
+  local GIT_LOCATION=${$(git symbolic-ref -q HEAD || git rev-parse --short HEAD)#(refs/heads/|tags/)}
+  # If not on a branch/tag, make the hash prominent to warn us
+  if ! git symbolic-ref -q HEAD 2>&1 > /dev/null ; then
+      GIT_LOCATION="%B${GIT_LOCATION}%b"
+  fi
 
   local AHEAD="%{$fg[blue]%}⇡NUM%{$reset_color%}"
   local BEHIND="%B%{$fg[blue]%}⇣NUM%{$reset_color%}%b"
