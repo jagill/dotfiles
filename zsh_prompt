@@ -42,7 +42,7 @@ git_info() {
     STATUS+=( "$MERGING" )
   fi
 
-  INDEX=$(command git status --porcelain | cut -d' ' -f1 2> /dev/null)
+  INDEX=$(command git status --porcelain | cut -c1-2 2> /dev/null)
   NUM_UNTRACKED=$(($(echo "$INDEX" | grep '?' | wc -l)))
   NUM_MODIFIED=$(( $(echo "$INDEX" | grep '^ M' | wc -l) + $(echo $INDEX | grep '^AM' | wc -l) + $(echo "$INDEX" | grep '^ T' | wc -l) ))
   NUM_MERGING=$(($(echo "$INDEX" | grep 'U' | wc -l)))
