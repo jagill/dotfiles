@@ -13,3 +13,31 @@ idea () {
     ~/fbsource/fbcode/javafoundations/scripts/idea "$@"
 }
 
+fbc=$HOME/fbsource/fbcode
+alias gofbc="cd $fbc"
+
+bxj=//experimental/jagill
+xj=$fbc/experimental/jagill
+alias goxj="cd $xj"
+
+bsat=//infrastrategy/spatial/satellite
+sat=$fbc/infrastrategy/spatial/satellite
+alias gosat="cd $sat"
+
+bhf=//infrastrategy/spatial/satellite/housefinder
+hf=$fbc/infrastrategy/spatial/satellite/housefinder
+alias gohf="cd $hf"
+
+bplat=//infrastrategy/platypus
+plat=$fbc/infrastrategy/platypus
+alias goplat="cd $plat"
+
+old_hf=$fbc/datascience/housefinder
+alias gohfo="cd $old_hf"
+
+alias bt="buck test"
+alias bb="buck build @mode/dev"
+alias bbo="buck build @mode/opt"
+alias br="buck run"
+
+alias hgp="hg pull --rebase -r 'draft()' -d master"
