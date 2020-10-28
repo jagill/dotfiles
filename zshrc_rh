@@ -1,0 +1,6 @@
+export CONFIG=$HOME/dotfiles
+
+ZSHRC="$HOME/dotfiles/zshrc"
+[ -f "$ZSHRC" ] && source "$ZSHRC"
+
+

@@ -18,7 +18,7 @@ if [ ! -d $CONFIG_DIR ]; then
   exit 1
 fi
 
-[ -f $HOME/.zshrc ] || ln -s $CONFIG_DIR/zshrc $HOME/.zshrc
+[ -f $HOME/.zshrc ] || ln -s $CONFIG_DIR/zshrc_${arch} $HOME/.zshrc
 [ -f $HOME/.bashrc ] || ln -s $CONFIG_DIR/bashrc_${arch} $HOME/.bashrc
 [ -f $HOME/.gitignore_global ] || ln -s $CONFIG_DIR/gitignore $HOME/.gitignore_global
 

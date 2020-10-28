@@ -1,0 +1,12 @@
+export CONFIG=$HOME/dotfiles
+
+ZSHRC="$HOME/dotfiles/zshrc"
+[ -f "$ZSHRC" ] && source "$ZSHRC"
+
+PRESTORC="$HOME/dotfiles/prestorc"
+[ -f "$PRESTORC" ] && source "$PRESTORC"
+
+PROJECTSRC="$HOME/dotfiles/projectsrc"
+[ -f "$PROJECTSRC" ] && source "$PROJECTSRC"
+
+export PATH="$HOME/.cargo/bin:$PATH"
