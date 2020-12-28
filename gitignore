@@ -4,6 +4,7 @@
 #vim
 *.swp
 *.swo
+.z3-trace
 
 ## OS X
 .DS_Store
@@ -25,6 +26,7 @@ xcuserdata/
 
 # VScode
 .vscode/
+*.code-workspace
 
 # IntelliJ
 .idea/

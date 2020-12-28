@@ -1,4 +1,5 @@
 export VPN_HOST='Americas East'
+export DEV=jagill.sb.facebook.com
 
 alias vpn=/opt/cisco/anyconnect/bin/vpn
 vpn-start () { printf "$1" | /opt/cisco/anyconnect/bin/vpn -s connect "$VPN_HOST"; }
@@ -16,24 +17,16 @@ idea () {
 fbc=$HOME/fbsource/fbcode
 alias gofbc="cd $fbc"
 
-bxj=//experimental/jagill
-xj=$fbc/experimental/jagill
-alias goxj="cd $xj"
-
-bsat=//infrastrategy/spatial/satellite
-sat=$fbc/infrastrategy/spatial/satellite
-alias gosat="cd $sat"
-
-bhf=//infrastrategy/spatial/satellite/housefinder
-hf=$fbc/infrastrategy/spatial/satellite/housefinder
-alias gohf="cd $hf"
+prv=$fbc/datainfra/privacy/
+pp=$fbc/datainfra/privacy/ppf/purpose_policy/
+ppr=$fbc/datainfra/privacy/ppf/purpose_policy/rust
+alias goprv="cd $prv"
+alias gopp="cd $pp"
+alias goppr="cd $ppr"
 
 bplat=//infrastrategy/platypus
 plat=$fbc/infrastrategy/platypus
 alias goplat="cd $plat"
-
-old_hf=$fbc/datascience/housefinder
-alias gohfo="cd $old_hf"
 
 alias bt="buck test"
 alias bb="buck build @mode/dev"

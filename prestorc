@@ -52,7 +52,8 @@ presto-facebook-deploy(){
 alias remote_vnc='ssh -Y -L 5901:localhost:5901 devvm118.frc2.facebook.com'
 
 presto_sync_ssl() {
-  sudo scp $USER@$USER.sb.facebook.com:"/var/facebook/rootcanal/ca.pem /var/facebook/credentials/$USER/x509/$USER.pem" /tmp/
+  set -e
+  rsync $USER@$USER.sb.facebook.com:"/var/facebook/rootcanal/ca.pem /var/facebook/credentials/$USER/x509/$USER.pem" /tmp/
   sudo mkdir -p /var/facebook/rootcanal/
   sudo mv /tmp/ca.pem /var/facebook/rootcanal/ca.pem
   sudo chmod 644 /var/facebook/rootcanal/ca.pem
