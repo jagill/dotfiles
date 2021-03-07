@@ -13,6 +13,12 @@ if [ -d "$HOME/.bashrc.local" ]; then
   done
 fi
 
+# Set xdg directories
+export XDG_DATA_HOME=$HOME/.local/share
+export XDG_CONFIG_HOME=$HOME/.config
+export XDG_CACHE_HOME=$HOME/.cache
+
+
 # If not running interactively, don't do anything
 if [[ -n "$PS1" ]] ; then
 

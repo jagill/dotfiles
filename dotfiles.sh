@@ -1,5 +1,7 @@
 #!/bin/bash
-if [ -z "$1" ]; then
+set -euo pipefail
+
+if [[ -z "${1:-}" ]]; then
   echo "Please supply the architecture (macos, ubuntu, rh) as the first argument." >&2
   exit 1
 fi
@@ -11,6 +13,9 @@ if [ ! "$arch" == "macos" -a ! "$arch" == "ubuntu" -a ! "$arch" == "rh" ]; then
   exit 1
 fi
 
+# Set xdg directories
+CONFIG_HOME=$HOME/.config
+mkdir -p $CONFIG_HOME
 
 CONFIG_DIR=${CONFIG_DIR:-$HOME/dotfiles}
 if [ ! -d $CONFIG_DIR ]; then
@@ -25,6 +30,9 @@ fi
 for f in bash_profile inputrc vimrc ackrc hgrc ctags gitconfig jshintrc tmux.conf; do
   [ -f $HOME/.$f ] || ln -s $CONFIG_DIR/$f $HOME/.$f
 done
+
+mkdir -p $CONFIG_HOME/nvim
+[ -f $CONFIG_HOME/nvim/init.vim ] || ln -s $CONFIG_DIR/init.vim $CONFIG_HOME/nvim/init.vim
 
 if [ ! -d $HOME/.vim ]; then
   git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/vundle
