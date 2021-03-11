@@ -4,8 +4,8 @@ set nocompatible    " don't try to be vi (This must be first)
 " VUNDLE
 """""""""""""""""""""""""""""""""""""""""""""""""""
 filetype off  " Must do this for vundle
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
 
 " Vundle plugins
 Plugin 'gmarik/vundle'
@@ -20,6 +20,7 @@ Plugin 'scrooloose/nerdcommenter'
 Plugin 'majutsushi/tagbar'
 Plugin 'kchmck/vim-coffee-script'
 
+call vundle#end()
 filetype plugin indent on  " Re-enable this after Vundle Plugins.
 
 """""""""""""""""""""""""""""""""""""""""""""""""""
